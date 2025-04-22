@@ -1,116 +1,98 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Menu ร้านสุขใจกะเพรา</title>
+  <title>QR Menu ระบบร้านอาหาร</title>
   <style>
     body { font-family: sans-serif; background: #e9f5e9; color: #333; margin: 0; padding: 20px; }
     h1 { color: #2e7d32; }
-    nav { margin-bottom: 20px; }
     nav a { margin-right: 15px; text-decoration: none; color: #2e7d32; font-weight: bold; }
-    .menu-item { border: 1px solid #c8e6c9; padding: 10px; margin-bottom: 10px; background: #ffffff; border-radius: 10px; }
+    .menu-item, .form-section { border: 1px solid #c8e6c9; padding: 10px; background: #ffffff; border-radius: 10px; margin-bottom: 10px; }
     img { max-width: 100px; }
-    .order-btn { background: #2e7d32; color: #fff; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; }
+    .btn { background: #2e7d32; color: #fff; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { border: 1px solid #c8e6c9; padding: 8px; text-align: left; }
     th { background-color: #a5d6a7; }
   </style>
 </head>
 <body>
-  <h1>QR Menu ร้านสุขใจกะเพรา</h1>
+  <h1>ระบบร้านอาหาร (QR Menu)</h1>
   <nav>
-    <a href="#" onclick="showMenu()">เมนูอาหาร</a>
-    <a href="#" onclick="showOrders()">ดูออเดอร์</a>
-    <a href="#" onclick="showAnalytics()">วิเคราะห์ยอดขาย</a>
-    <a href="#" onclick="showAdmin()">จัดการเมนู</a>
+    <a href="#" onclick="loadPage('order')">เมนูอาหาร</a>
+    <a href="#" onclick="loadPage('kitchen')">รายการออเดอร์</a>
+    <a href="#" onclick="loadPage('admin')">จัดการเมนูอาหาร</a>
+    <a href="#" onclick="loadPage('sales')">สถิติเมนูขายดี</a>
+    <a href="#" onclick="loadPage('account')">รายรับประจำเดือน</a>
+    <a href="#" onclick="loadPage('tax')">สรุปภาษี</a>
   </nav>
+
   <div id="content"></div>
 
   <script>
-    const orderLog = JSON.parse(localStorage.getItem('orders') || '[]');
+    const currentMonth = new Date().toISOString().slice(0, 7); // เช่น 2025-04
+    const dataKey = `orders_${currentMonth}`;
+    const orderLog = JSON.parse(localStorage.getItem(dataKey) || '[]');
+    let menuData = JSON.parse(localStorage.getItem('menuData')) || [
+      { name: "ข้าวผัดหมู", price: 50, image: "https://via.placeholder.com/100" },
+      { name: "ข้าวไข่เจียว", price: 40, image: "https://via.placeholder.com/100" },
+      { name: "ข้าวผัดกะเพรา", price: 55, image: "https://via.placeholder.com/100" }
+    ];
 
-    function showMenu() {
-      fetch('data/2025-04.json')
-        .then(response => response.json())
-        .then(data => {
-          const menuHtml = data.map(item => `
-            <div class='menu-item'>
-              <h3>${item.name}</h3>
-              <p>ราคา: ${item.price} บาท</p>
-              <img src="${item.image}" alt="${item.name}"><br>
-              <button class='order-btn' onclick='order("${item.name}", ${item.price})'>สั่งเลย</button>
-            </div>
-          `).join('');
-          document.getElementById('content').innerHTML = menuHtml;
-        });
+    function loadPage(page) {
+      if (page === 'order') {
+        document.getElementById('content').innerHTML = menuData.map(item => `
+          <div class='menu-item'>
+            <h3>${item.name}</h3>
+            <p>ราคา: ${item.price} บาท</p>
+            <img src="${item.image}" alt="${item.name}"><br>
+            <button class='btn' onclick='placeOrder("${item.name}", ${item.price})'>สั่งเลย</button>
+          </div>`).join('');
+      } else if (page === 'kitchen') {
+        const rows = orderLog.map(order => `<tr><td>${order.name}</td><td>${order.price}</td><td>${new Date(order.time).toLocaleString()}</td></tr>`).join('');
+        document.getElementById('content').innerHTML = `<h2>ออเดอร์ทั้งหมด</h2><table><tr><th>เมนู</th><th>ราคา</th><th>เวลา</th></tr>${rows}</table>`;
+      } else if (page === 'admin') {
+        const forms = menuData.map((item, i) => `
+          <div class='form-section'>
+            <label>ชื่อ: <input type='text' value='${item.name}' onchange='editMenu(${i}, "name", this.value)'></label><br>
+            <label>ราคา: <input type='number' value='${item.price}' onchange='editMenu(${i}, "price", this.value)'></label><br>
+            <label>รูปภาพ: <input type='text' value='${item.image}' onchange='editMenu(${i}, "image", this.value)'></label>
+          </div>`).join('');
+        document.getElementById('content').innerHTML = `<h2>จัดการเมนู</h2>${forms}<button class='btn' onclick='saveMenu()'>บันทึกเมนู</button>`;
+      } else if (page === 'sales') {
+        const stat = {};
+        orderLog.forEach(order => stat[order.name] = (stat[order.name] || 0) + 1);
+        const rows = Object.entries(stat).map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+        document.getElementById('content').innerHTML = `<h2>เมนูขายดี</h2><table><tr><th>เมนู</th><th>จำนวนที่ขาย</th></tr>${rows}</table>`;
+      } else if (page === 'account') {
+        const total = orderLog.reduce((sum, o) => sum + o.price, 0);
+        document.getElementById('content').innerHTML = `<h2>บัญชีรายรับ</h2><p>ยอดรวม: ${total} บาท</p>`;
+      } else if (page === 'tax') {
+        const total = orderLog.reduce((sum, o) => sum + o.price, 0);
+        const vat = total * 0.07;
+        document.getElementById('content').innerHTML = `<h2>ข้อมูลสำหรับยื่นภาษี</h2><p>ยอดขายรวม: ${total} บาท<br>VAT 7%: ${vat.toFixed(2)} บาท</p>`;
+      }
     }
 
-    function order(name, price) {
+    function placeOrder(name, price) {
       const now = new Date();
       const orderData = { name, price, time: now.toISOString() };
       orderLog.push(orderData);
-      localStorage.setItem('orders', JSON.stringify(orderLog));
-      alert(`สั่ง ${name} เรียบร้อย`);
+      localStorage.setItem(dataKey, JSON.stringify(orderLog));
+      alert(`สั่ง ${name} เรียบร้อยแล้ว`);
     }
 
-    function showOrders() {
-      const rows = orderLog.map(order => `
-        <tr><td>${order.name}</td><td>${order.price}</td><td>${new Date(order.time).toLocaleString()}</td></tr>
-      `).join('');
-      document.getElementById('content').innerHTML = `
-        <h2>รายการสั่งซื้อ</h2>
-        <table><tr><th>เมนู</th><th>ราคา</th><th>เวลา</th></tr>${rows}</table>
-      `;
-    }
-
-    function showAnalytics() {
-      const stats = {};
-      orderLog.forEach(order => {
-        stats[order.name] = (stats[order.name] || 0) + 1;
-      });
-      const rows = Object.entries(stats).map(([name, count]) => `
-        <tr><td>${name}</td><td>${count}</td></tr>
-      `).join('');
-      document.getElementById('content').innerHTML = `
-        <h2>ยอดขายตามเมนู</h2>
-        <table><tr><th>เมนู</th><th>จำนวนที่ขาย</th></tr>${rows}</table>
-      `;
-    }
-
-    function showAdmin() {
-      fetch('data/2025-04.json')
-        .then(response => response.json())
-        .then(data => {
-          const formHtml = data.map((item, index) => `
-            <div class='menu-item'>
-              <label>ชื่อ: <input type='text' value='${item.name}' onchange='updateItem(${index}, "name", this.value)' /></label><br>
-              <label>ราคา: <input type='number' value='${item.price}' onchange='updateItem(${index}, "price", this.value)' /></label><br>
-              <label>รูปภาพ: <input type='text' value='${item.image}' onchange='updateItem(${index}, "image", this.value)' /></label>
-            </div>
-          `).join('');
-          document.getElementById('content').innerHTML = `
-            <h2>จัดการเมนู</h2>
-            ${formHtml}
-            <button class='order-btn' onclick='saveMenu()'>บันทึกเมนู</button>
-          `;
-          window.menuData = data;
-        });
-    }
-
-    function updateItem(index, key, value) {
-      window.menuData[index][key] = value;
+    function editMenu(index, key, value) {
+      menuData[index][key] = key === 'price' ? parseFloat(value) : value;
     }
 
     function saveMenu() {
-      const blob = new Blob([JSON.stringify(window.menuData, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = '2025-04.json';
-      a.click();
+      localStorage.setItem('menuData', JSON.stringify(menuData));
+      alert('บันทึกเมนูเรียบร้อยแล้ว');
     }
 
-    showMenu();
+    loadPage('order');
   </script>
 </body>
 </html>
