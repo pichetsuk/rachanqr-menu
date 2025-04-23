@@ -10,53 +10,14 @@
   <header>
     <h1>ระบบสั่งอาหาร</h1>
     <nav>
-      <a href="#" onclick="loadPage('order')">เมนูลูกค้า</a>
-      <a href="#" onclick="loadPage('kitchen')">ครัว</a>
-      <a href="#" onclick="loadPage('admin')">จัดการเมนู</a>
-      <a href="#" onclick="loadPage('sales')">ขายดี</a>
-      <a href="#" onclick="loadPage('account')">บัญชี</a>
-      <a href="#" onclick="loadPage('tax')">ภาษี</a>
+      <a href="order.html">เมนูลูกค้า</a>
+      <a href="kitchen.html">ครัว</a>
+      <a href="admin.html">จัดการเมนู</a>
+      <a href="sales.html">ขายดี</a>
+      <a href="account.html">บัญชี</a>
+      <a href="tax.html">ภาษี</a>
     </nav>
   </header>
-
-  <main id="content">
-    <section id="order">
-      <h2>เมนูลูกค้า</h2>
-      <div id="menuList"></div>
-      <div id="orderSummary">
-        <h3>ออร์เดอร์ของคุณ</h3>
-        <ul id="orderItems"></ul>
-        <p>รวม: <span id="orderTotal">0</span> บาท</p>
-        <button onclick="submitOrder()">ยืนยันการสั่งซื้อ</button>
-      </div>
-    </section>
-
-    <section id="kitchen">
-      <h2>ครัว</h2>
-      <p>แสดงรายการออเดอร์ที่ต้องทำ</p>
-    </section>
-
-    <section id="admin">
-      <h2>จัดการเมนูอาหาร</h2>
-      <p>เพิ่ม ลบ แก้ไข เมนูและราคา</p>
-    </section>
-
-    <section id="sales">
-      <h2>เมนูขายดี</h2>
-      <p>แสดงสถิติเมนูขายดี รายวัน/รายเดือน</p>
-    </section>
-
-    <section id="account">
-      <h2>บัญชีรายรับ</h2>
-      <p>แสดงรายรับจากการขาย พร้อมกราฟสรุป</p>
-    </section>
-
-    <section id="tax">
-      <h2>ข้อมูลภาษี</h2>
-      <p>สรุปภาษีที่ต้องยื่น พร้อมปุ่มส่งออก Excel/PDF</p>
-    </section>
-  </main>
-
   <audio id="orderSound" src="assets/notification.mp3"></audio>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
