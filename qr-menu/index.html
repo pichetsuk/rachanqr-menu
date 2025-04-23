@@ -22,5 +22,14 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="script.js"></script>
+    <script>
+    // โหลดข้อมูลเมนูและออเดอร์จากไฟล์ JSON กลาง
+    fetch('data/restaurant_data.json')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Loaded shared data:', data);
+      })
+      .catch(error => console.error('Error loading shared data:', error));
+  </script>
 </body>
 </html>
