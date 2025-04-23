@@ -51,15 +51,11 @@ function loadPage(pageId) {
       });
     }
 
-    function submitOrder() {
+    async function submitOrder() {
       const now = new Date();
       const transaction = {
         table: 'A1',
         timestamp: now.toISOString(),
         order
       };
-      alert('ส่งออเดอร์เรียบร้อย!');
-      console.log('ออเดอร์:', transaction);
-      // จะต้องเพิ่มการเขียน transaction นี้ไปยัง restaurant_data.json โดยใช้ API ฝั่งเซิร์ฟเวอร์
-    }
   </script>
