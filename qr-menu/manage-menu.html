@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>จัดการเมนูอาหาร</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>จัดการเมนูอาหาร</h1>
+  </header>
+
+  <main>
+    <h2>เมนูปัจจุบัน</h2>
+    <table id="menuTable">
+      <thead>
+        <tr>
+          <th>ชื่อเมนู</th>
+          <th>ราคา</th>
+          <th>หมวดหมู่</th>
+          <th>การกระทำ</th>
+        </tr>
+      </thead>
+      <tbody id="menuBody">
+        <!-- เมนูจะแสดงที่นี่ -->
+      </tbody>
+    </table>
+
+    <h2>เพิ่มเมนูใหม่</h2>
+    <form id="addMenuForm">
+      <label for="menuName">ชื่อเมนู:</label>
+      <input type="text" id="menuName" required><br><br>
+      <label for="menuPrice">ราคา:</label>
+      <input type="number" id="menuPrice" required><br><br>
+      <label for="menuCategory">หมวดหมู่:</label>
+      <input type="text" id="menuCategory" required><br><br>
+      <button type="submit">เพิ่มเมนู</button>
+    </form>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    const menuFile = 'menu.json'; // เส้นทางของไฟล์ JSON เมนู
+    let menuData = [];
+
+    // ฟังก์ชั่นเพื่อโหลดข้อมูลเมนูจากไฟล์ JSON
+    function loadMenuData() {
+      fetch(menuFile)
+        .then(response => response.json())
+        .then(data => {
+          menuData = data.menu;
+          renderMenuTable();
+        })
+        .catch(error => console.error('Error loading menu data:', error));
+    }
+
+    // ฟังก์ชั่นเพื่อแสดงตารางเมนู
+    function renderMenuTable() {
+      const menuBody = document.getElementById('menuBody');
+      menuBody.innerHTML = ''; // เคลียร์ข้อมูลเดิม
+      menuData.forEach(menu => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${menu.name}</td>
+          <td>${menu.price} บาท</td>
+          <td>${menu.category}</td>
+          <td>
+            <button onclick="editMenu(${menu.id})">แก้ไข</button>
+            <button onclick="deleteMenu(${menu.id})">ลบ</button>
+          </td>
+        `;
+        menuBody.appendChild(row);
+      });
+    }
+
+    // ฟังก์ชั่นเพื่อเพิ่มเมนูใหม่
+    document.getElementById('addMenuForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const newMenu = {
+        id: menuData.length + 1, // กำหนด id ใหม่
+        name: document.getElementById('menuName').value,
+        price: parseFloat(document.getElementById('menuPrice').value),
+        category: document.getElementById('menuCategory').value
+      };
+      menuData.push(newMenu);
+      renderMenuTable(); // แสดงข้อมูลเมนูที่อัปเดต
+      saveMenuData(); // บันทึกข้อมูลใหม่ลงในไฟล์
+      this.reset(); // รีเซ็ตฟอร์ม
+    });
+
+    // ฟังก์ชั่นเพื่อบันทึกข้อมูลเมนู
+    function saveMenuData() {
+      const menuJson = JSON.stringify({ menu: menuData }, null, 2);
+      const blob = new Blob([menuJson], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'menu.json'; // ชื่อไฟล์ที่ต้องการบันทึก
+      link.click();
+    }
+
+    // ฟังก์ชั่นเพื่อแก้ไขเมนู
+    function editMenu(menuId) {
+      const menu = menuData.find(m => m.id === menuId);
+      if (menu) {
+        document.getElementById('menuName').value = menu.name;
+        document.getElementById('menuPrice').value = menu.price;
+        document.getElementById('menuCategory').value = menu.category;
+        // ลบเมนูเก่าออก
+        menuData = menuData.filter(m => m.id !== menuId);
+        renderMenuTable(); // แสดงเมนูที่อัปเดต
+      }
+    }
+
+    // ฟังก์ชั่นเพื่อลบเมนู
+    function deleteMenu(menuId) {
+      menuData = menuData.filter(m => m.id !== menuId);
+      renderMenuTable(); // แสดงเมนูที่อัปเดต
+      saveMenuData(); // บันทึกข้อมูลใหม่ลงในไฟล์
+    }
+
+    // โหลดข้อมูลเมนูเมื่อหน้าเว็บโหลด
+    window.onload = loadMenuData;
+  </script>
+</body>
+</html>
