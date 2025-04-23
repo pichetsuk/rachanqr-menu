@@ -1,0 +1,23 @@
+{
+  "menu": [
+    { "id": 1, "name": "กระเพราหมู", "price": 50 },
+    { "id": 2, "name": "กระเพรากุ้ง", "price": 60 },
+    { "id": 3, "name": "กระเพราหมูกรอบ", "price": 70 }
+  ],
+  "orders": [
+    { "id": 1, "menu": "กระเพราหมู", "quantity": 2, "status": "pending" },
+    { "id": 2, "menu": "กระเพรากุ้ง", "quantity": 1, "status": "completed" }
+  ],
+  "sales": [
+    { "menu": "กระเพราหมู", "sold": 50 },
+    { "menu": "กระเพรากุ้ง", "sold": 40 }
+  ],
+  "accounts": [
+    { "date": "2025-04-01", "revenue": 5000 },
+    { "date": "2025-04-02", "revenue": 4000 }
+  ],
+  "taxes": [
+    { "month": "เมษายน", "tax": 1000 },
+    { "month": "พฤษภาคม", "tax": 1200 }
+  ]
+}
