@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ครัว</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+</head>
+<body>
+  <header>
+    <h1>ครัว</h1>
+    <nav>
+      <a href="index.html">กลับสู่หน้าแรก</a>
+    </nav>
+  </header>
+  
+  <main id="content">
+    <h2>รายการออเดอร์ที่ต้องทำ</h2>
+    <ul id="orderList"></ul>
+  </main>
+
+  <script>
+    // Fetch order data from JSON
+    fetch('menuData.json')
+      .then(response => response.json())
+      .then(data => {
+        const orderList = document.getElementById('orderList');
+        data.orders.forEach(order => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `ออเดอร์ ${order.id}: ${order.menu} x ${order.quantity} - สถานะ: ${order.status}`;
+          orderList.appendChild(listItem);
+        });
+      })
+      .catch(error => console.error('Error loading order data:', error));
+  </script>
+</body>
+</html>

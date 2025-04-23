@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บัญชีรายรับ</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+</head>
+<body>
+  <header>
+    <h1>บัญชีรายรับ</h1>
+    <nav>
+      <a href="index.html">กลับสู่หน้าแรก</a>
+    </nav>
+  </header>
+  
+  <main id="content">
+    <h2>รายรับจากการขาย</h2>
+    <table id="accountTable">
+      <tr>
+        <th>วันที่</th>
+        <th>ยอดขาย</th>
+      </tr>
+    </table>
+  </main>
+
+  <script>
+    // Fetch account data from JSON
+    fetch('menuData.json')
+      .then(response => response.json())
+      .then(data => {
+        const accountTable = document.getElementById('accountTable');
+        data.accounts.forEach(account => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${account.date}</td><td>${account.revenue} บาท</td>`;
+          accountTable.appendChild(row);
+        });
+      })
+      .catch(error => console.error('Error loading account data:', error));
+  </script>
+</body>
+</html>

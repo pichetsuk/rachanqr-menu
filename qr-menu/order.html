@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เมนูลูกค้า</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+</head>
+<body>
+  <header>
+    <h1>เมนูลูกค้า</h1>
+    <nav>
+      <a href="index.html">กลับสู่หน้าแรก</a>
+    </nav>
+  </header>
+  
+  <main id="content">
+    <h2>เลือกรายการอาหาร</h2>
+    <ul id="menuList"></ul>
+    <button>ยืนยันคำสั่งซื้อ</button>
+  </main>
+
+  <script>
+    // Fetch data from JSON
+    fetch('menuData.json')
+      .then(response => response.json())
+      .then(data => {
+        const menuList = document.getElementById('menuList');
+        data.menu.forEach(item => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `${item.name} - ${item.price} บาท`;
+          menuList.appendChild(listItem);
+        });
+      })
+      .catch(error => console.error('Error loading menu data:', error));
+  </script>
+</body>
+</html>

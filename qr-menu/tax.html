@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ข้อมูลภาษี</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+</head>
+<body>
+  <header>
+    <h1>ข้อมูลภาษี</h1>
+    <nav>
+      <a href="index.html">กลับสู่หน้าแรก</a>
+    </nav>
+  </header>
+  
+  <main id="content">
+    <h2>สรุปภาษีที่ต้องยื่น</h2>
+    <table id="taxTable">
+      <tr>
+        <th>เดือน</th>
+        <th>ภาษีที่ต้องจ่าย</th>
+      </tr>
+    </table>
+    <button>ส่งออกข้อมูลภาษี (Excel/PDF)</button>
+  </main>
+
+  <script>
+    // Fetch tax data from JSON
+    fetch('menuData.json')
+      .then(response => response.json())
+      .then(data => {
+        const taxTable = document.getElementById('taxTable');
+        data.taxes.forEach(tax => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${tax.month}</td><td>${tax.tax} บาท</td>`;
+          taxTable.appendChild(row);
+        });
+      })
+      .catch(error => console.error('Error loading tax data:', error));
+  </script>
+</body>
+</html>

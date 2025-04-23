@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เมนูขายดี</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+</head>
+<body>
+  <header>
+    <h1>เมนูขายดี</h1>
+    <nav>
+      <a href="index.html">กลับสู่หน้าแรก</a>
+    </nav>
+  </header>
+  
+  <main id="content">
+    <h2>สถิติเมนูขายดี</h2>
+    <table id="salesTable">
+      <tr>
+        <th>เมนู</th>
+        <th>จำนวนขาย</th>
+      </tr>
+    </table>
+  </main>
+
+  <script>
+    // Fetch sales data from JSON
+    fetch('menuData.json')
+      .then(response => response.json())
+      .then(data => {
+        const salesTable = document.getElementById('salesTable');
+        data.sales.forEach(sale => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${sale.menu}</td><td>${sale.sold}</td>`;
+          salesTable.appendChild(row);
+        });
+      })
+      .catch(error => console.error('Error loading sales data:', error));
+  </script>
+</body>
+</html>
