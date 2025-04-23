@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบสั่งอาหาร</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>ระบบสั่งอาหาร</h1>
+    <nav>
+      <a href="#" onclick="loadPage('order')">เมนูลูกค้า</a>
+      <a href="#" onclick="loadPage('kitchen')">ครัว</a>
+      <a href="#" onclick="loadPage('admin')">จัดการเมนู</a>
+      <a href="#" onclick="loadPage('sales')">ขายดี</a>
+      <a href="#" onclick="loadPage('account')">บัญชี</a>
+      <a href="#" onclick="loadPage('tax')">ภาษี</a>
+    </nav>
+  </header>
+
+  <main id="content">
+    <section id="order" class="active"><h2>เมนูลูกค้า</h2></section>
+    <section id="kitchen"><h2>ครัว</h2></section>
+    <section id="admin"><h2>จัดการเมนู</h2></section>
+    <section id="sales"><h2>ขายดี</h2></section>
+    <section id="account"><h2>บัญชี</h2></section>
+    <section id="tax"><h2>ภาษี</h2></section>
+  </main>
+
+  <audio id="orderSound" src="assets/notification.mp3"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
